@@ -87,7 +87,7 @@ then
 	v2Version=$(curl -s 'https://api.github.com/repos/v2fly/v2ray-core/releases/latest' -H 'Accept: application/vnd.github.v3+json' | grep 'tag_name' | cut -d\" -f4)
 	if [ ! $v2Version ];
 	then
-		v2Version="latest"
+		v2Version="v5.2.1"
 	fi
 	
 	ctlVersion=`wget -q -O - https://api.github.com/repos/ChenSee/easy-v2ray-mu/releases/latest | grep '"tag_name":'| awk '{printf $2}'`
