@@ -7,7 +7,7 @@
     "tag": "api"
   },
   "stats": {},
-  "inbound": {
+  "inbounds": [{
     "port": 8300,
     "protocol": "vmess",
     "settings": {
@@ -48,26 +48,24 @@
 
     "tag": "proxy"
   },
-  "inboundDetour": [
-    {
-      "listen": "127.0.0.1",
-      "port": 8301,
-      "protocol": "dokodemo-door",
-      "settings": {
-        "address": "0.0.0.0"
-      },
-      "tag": "api"
-    }
-  ],
+  {
+    "listen": "127.0.0.1",
+    "port": 8301,
+    "protocol": "dokodemo-door",
+    "settings": {
+      "address": "0.0.0.0"
+    },
+    "tag": "api"
+  }],
   "log": {
     "loglevel": "warning",
     "access": "log/access.log",
     "error": "log/error.log"
   },
-  "outbound": {
+  "outbounds": [{
     "protocol": "freedom",
     "settings": {}
-  },
+  }],
   "routing": {
     "settings": {
       "rules": [
