@@ -47,7 +47,7 @@ sed -i "29c \ \ \ \ \ \ \ \ \ \ \ \ \"certificateFile\": \"$CertificateFile\"," 
 sed -i "30c \ \ \ \ \ \ \ \ \ \ \ \ \"keyFile\": \"$KeyFile\"" cfg.json
 sed -i "44c \ \ \ \ \ \ \ \ \ \ \"type\": \"$ObfsType\"" cfg.json
 
-nohup $(readlink -f v2ray) --config=$(readlink -f cfg.json)>> /dev/null 2>&1 &
+nohup $(readlink -f v2ray) run $(readlink -f cfg.json)>> /dev/null 2>&1 &
 echo 'Preparing...'
 sleep 3
 nohup $(readlink -f v2mctl)>> /dev/null 2>&1 &
