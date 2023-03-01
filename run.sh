@@ -46,6 +46,7 @@ sed -i "22c \ \ \ \ \ \ \ \ \"allowInsecure\": $AllowInsecure," cfg.json
 sed -i "29c \ \ \ \ \ \ \ \ \ \ \ \ \"certificateFile\": \"$CertificateFile\"," cfg.json
 sed -i "30c \ \ \ \ \ \ \ \ \ \ \ \ \"keyFile\": \"$KeyFile\"" cfg.json
 sed -i "44c \ \ \ \ \ \ \ \ \ \ \"type\": \"$ObfsType\"" cfg.json
+sed -i "48c \ \ \ \ \ \ \ \ \"path\": \"$WsPath\"" cfg.json
 
 nohup env v2ray.vmess.aead.forced=false $(readlink -f v2ray) run -c $(readlink -f cfg.json)>> /dev/null 2>&1 &
 echo 'Preparing...'
