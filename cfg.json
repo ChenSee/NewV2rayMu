@@ -43,6 +43,9 @@
         "header": {
           "type": "none"
         }
+      },
+      "wsSettings": {
+        "path": "/"
       }
     },
 
