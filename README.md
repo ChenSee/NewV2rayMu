@@ -4,7 +4,7 @@
 ## Then,
 ### sh install.sh
 ## OR
-### sh install.sh MU_URI MU_KEY MU_NODE_ID
+### sh install.sh MU_URI MU_KEY DOMAIN MU_NODE_ID
 
 ## ONE KEY INSTALL  
 ### eg:  
