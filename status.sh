@@ -19,7 +19,7 @@ then
 	echo "`date`: Auto Restart/Start V2muctl Service" >> log/auto_restart.log
 	exit
 fi
-status=`curl $MU_URI\/nodes\/$NodeId\/status -s`
+status=`curl $MU_URI\/nodes\/$MU_NODE_ID\/status -s`
 if [ "$status" == "Offline" ]
 then
 	./run.sh
