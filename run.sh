@@ -32,6 +32,7 @@ export V2RAY_TAG=$V2RAY_TAG
 
 if [ $(grep -c "api" /etc/v2ray/conf/*.json) == "0" ]; then
     sed -i 's/\] \} \} \] \}/] } } ,{ "listen": "127.0.0.1", "port": 8301, "protocol": "dokodemo-door", "settings": { "address": "0.0.0.0" }, "tag": "api" }],"api": { "services": [ "HandlerService", "StatsService" ], "tag": "api" },"outbounds": [ { "tag": "direct", "protocol": "freedom", "settings": { } } ], "routing": { "settings": { "rules": [ { "inboundTag": [ "api" ], "outboundTag": "api", "type": "field" } ] }, "strategy": "rules" } }/' /etc/v2ray/conf/*.json
+    sed -i 's/"tag": "VMess-.*json"/"tag": "proxy"/' /etc/v2ray/conf/*.json
 fi
 
 nohup v2ray bin run -config /etc/v2ray/conf/*.json >>/dev/null 2>&1 &
