@@ -52,14 +52,14 @@ then
 
 	mkdir log
 	touch log/v2ray-mu.log
-	wget https://raw.githubusercontent.com/ChenSee/new-v2ray-mu/dev/v2mctl
-	wget https://raw.githubusercontent.com/ChenSee/new-v2ray-mu/dev/mu.conf
-	wget https://raw.githubusercontent.com/ChenSee/new-v2ray-mu/dev/run.sh
-	wget https://raw.githubusercontent.com/ChenSee/new-v2ray-mu/dev/stop.sh
-	wget https://raw.githubusercontent.com/ChenSee/new-v2ray-mu/dev/cleanLogs.sh
-	wget https://raw.githubusercontent.com/ChenSee/new-v2ray-mu/dev/catLogs.sh
-	wget https://raw.githubusercontent.com/ChenSee/new-v2ray-mu/dev/status.sh
-	wget https://raw.githubusercontent.com/ChenSee/new-v2ray-mu/dev/update.sh
+	wget https://raw.githubusercontent.com/ChenSee/NewV2rayMu/dev/v2mctl
+	wget https://raw.githubusercontent.com/ChenSee/NewV2rayMu/dev/mu.conf
+	wget https://raw.githubusercontent.com/ChenSee/NewV2rayMu/dev/run.sh
+	wget https://raw.githubusercontent.com/ChenSee/NewV2rayMu/dev/stop.sh
+	wget https://raw.githubusercontent.com/ChenSee/NewV2rayMu/dev/cleanLogs.sh
+	wget https://raw.githubusercontent.com/ChenSee/NewV2rayMu/dev/catLogs.sh
+	wget https://raw.githubusercontent.com/ChenSee/NewV2rayMu/dev/status.sh
+	wget https://raw.githubusercontent.com/ChenSee/NewV2rayMu/dev/update.sh
 	sed -i "s;##mu_uri##;${mu_uri}/mu/v2;g" mu.conf
 	sed -i "s;##mu_key##;$mu_key;g" mu.conf
 	sed -i "s;##node_id##;$node_id;g" mu.conf
