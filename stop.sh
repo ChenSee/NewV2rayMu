@@ -1,5 +1,5 @@
 #!/bin/bash
-v2ray_pid=$(ps ux | grep "$(readlink -f v2ray)" | grep -v grep | awk '{print $2}')
+v2ray_pid=$(ps ux | grep "/etc/v2ray/bin/v2ray" | grep -v grep | awk '{print $2}')
 v2muctl_pid=$(ps ux | grep "$(readlink -f v2mctl)" | grep -v grep | awk '{print $2}')
 
 if [ ! $v2ray_pid ];
