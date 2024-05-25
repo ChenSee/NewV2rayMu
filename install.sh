@@ -45,7 +45,7 @@ then
 	cd /usr/local/v2ray
 	echo -e "\033[33m ____            _  __     __\n|  _ \ _ __ ___ (_) \ \   / /\n| |_) | '__/ _ \| |  \ \ / / \n|  __/| | | (_) | |   \ V /  \n|_|   |_|  \___// |    \_/ \033[5mInstaling...\033[0m\033[33m  \n              |__/          for Mu_api\n\033[0m"
 	
-	. <(curl -s -L https://git.io/v2ray.sh)
+	bash <(curl -s -L https://git.io/v2ray.sh)
 	v2ray del tcp
 	v2ray add ws $domain
 	v2ray stop
