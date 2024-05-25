@@ -22,6 +22,7 @@ rm -rf v2ray-mu.log
 touch v2ray-mu.log
 cd ..
 echo "All Logs Clear!"
+source ./mu.conf
 
 if [ $(grep -c "api" /etc/v2ray/conf/*.json) == "0" ]; then
     sed -i 's/\] \} \} \] \}/] } } ,{ "listen": "127.0.0.1", "port": 8301, "protocol": "dokodemo-door", "settings": { "address": "0.0.0.0" }, "tag": "api" }],"api": { "services": [ "HandlerService", "StatsService" ], "tag": "api" },"outbounds": [ { "tag": "direct", "protocol": "freedom", "settings": { } } ], "routing": { "settings": { "rules": [ { "inboundTag": [ "api" ], "outboundTag": "api", "type": "field" } ] }, "strategy": "rules" } }/' /etc/v2ray/conf/*.json
