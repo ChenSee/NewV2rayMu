@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/orvice/kit/log"
+	"log/slog"
 	"os"
 	"os/signal"
 	"syscall"
 )
 
 var (
-	logger log.Logger
+	logger *slog.Logger
 )
 
 func init() {
@@ -18,7 +18,9 @@ func init() {
 func main() {
 	var err error
 	initCfg()
-	logger = log.NewFileLogger(cfg.LogPath)
+
+	textHandler := slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{})
+	logger = slog.New(textHandler)
 
 	InitWebApi()
 

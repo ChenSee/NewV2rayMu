@@ -4,8 +4,9 @@ import (
 	"context"
 	"sync"
 
+	"v2raymanager"
+
 	"github.com/catpie/musdk-go"
-	"github.com/orvice/v2ray-manager"
 )
 
 type UserManager struct {
@@ -61,9 +62,10 @@ func (u *UserManager) Exist(user musdk.User) bool {
 }
 
 func (u *UserManager) saveUserTraffic(user musdk.User) {
-	logger.Infof("check user %d traffic",user.Id)
-	ti := u.vm.GetTrafficAndReset(&user.V2rayUser)
-	logger.Infof("check user %v traffic",ti)
+	ctx, _ := context.WithCancel(u.ctx)
+	logger.Info("check user %d traffic", user.Id)
+	ti, _ := u.vm.GetTrafficAndReset(ctx, &user.V2rayUser)
+	logger.Info("check user %v traffic", ti)
 	if ti.Down == 0 && ti.Up == 0 {
 		return
 	}
@@ -72,6 +74,6 @@ func (u *UserManager) saveUserTraffic(user musdk.User) {
 		U:      ti.Up,
 		D:      ti.Down,
 	}
-	logger.Infof("save traffice log %v", trafficLog)
+	logger.Info("save traffice log %v", trafficLog)
 	apiClient.SaveTrafficLog(trafficLog)
 }

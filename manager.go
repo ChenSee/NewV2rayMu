@@ -1,21 +1,23 @@
 package main
 
 import (
+	"context"
+	"crypto/md5"
+	"errors"
 	"strconv"
 	"time"
-	"errors"
-	"crypto/md5"
 
+	"fmt"
+	"net/http"
+
+	"v2raymanager"
 
 	"github.com/catpie/musdk-go"
-	"github.com/orvice/v2ray-manager"
 	"github.com/orvice/shadowsocks-go/mu/system"
-	"net/http"
-	"fmt"
 )
 
 func getV2rayManager() (*v2raymanager.Manager, error) {
-	vm, err := v2raymanager.NewManager(cfg.V2rayClientAddr, cfg.V2rayTag)
+	vm, err := v2raymanager.NewManager(cfg.V2rayClientAddr, cfg.V2rayTag, logger)
 	return vm, err
 }
 
@@ -23,10 +25,10 @@ func (u *UserManager) check() error {
 	logger.Info("Checking users from mu...")
 	users, err := apiClient.GetUsers()
 	if err != nil {
-		logger.Errorf("Get users from error: %v", err)
+		logger.Error("Get users from error: %v", err)
 		return err
 	}
-	logger.Infof("Get %d users from mu", len(users))
+	logger.Info("Get %d users from mu", len(users))
 	for _, user := range users {
 		u.checkUser(user)
 	}
@@ -35,27 +37,28 @@ func (u *UserManager) check() error {
 }
 
 func (u *UserManager) checkUser(user musdk.User) error {
+	ctx, _ := context.WithCancel(u.ctx)
 	var err error
 	if user.IsEnable() && !u.Exist(user) {
-		logger.Infof("Run user id %d uuid %s", user.Id, user.V2rayUser.UUID)
+		logger.Info("Run user id %d uuid %s", user.Id, user.V2rayUser.UUID)
 		// run user
-		err = u.vm.AddUser(&user.V2rayUser)
+		_, err = u.vm.AddUser(ctx, &user.V2rayUser)
 		if err != nil {
-			logger.Errorf("Add user %s error %v", user.V2rayUser.UUID, err)
+			logger.Error("Add user %s error %v", user.V2rayUser.UUID, err)
 			return err
 		}
-		logger.Infof("Add user success %s", user.V2rayUser.UUID)
+		logger.Info("Add user success %s", user.V2rayUser.UUID)
 		u.AddUser(user)
 		return nil
 	}
 
 	if !user.IsEnable() && u.Exist(user) {
-		logger.Infof("Stop user id %d uuid %s", user.Id, user.V2rayUser.UUID)
+		logger.Info("Stop user id %d uuid %s", user.Id, user.V2rayUser.UUID)
 		// stop user
-		err = u.vm.RemoveUser(&user.V2rayUser)
+		err = u.vm.RemoveUser(ctx, &user.V2rayUser)
 
 		if err != nil {
-			logger.Errorf("Remove user error %v", err)
+			logger.Error("Remove user error %v", err)
 			time.Sleep(time.Second * 10)
 			return err
 		}
@@ -84,7 +87,7 @@ func (u *UserManager) Down() {
 }
 
 func (u *UserManager) saveTrafficDaemon() {
-	logger.Infof("Runing save traffic daemon...")
+	logger.Info("Runing save traffic daemon...")
 	u.usersMu.RLock()
 	defer u.usersMu.RUnlock()
 	for _, user := range u.users {
@@ -93,10 +96,10 @@ func (u *UserManager) saveTrafficDaemon() {
 }
 
 func (u *UserManager) postNodeInfo() error {
-	logger.Infof("Posting node info...")
+	logger.Info("Posting node info...")
 	err := u.PostNodeInfo()
 	if err != nil {
-		logger.Errorf("Post node info error %v", err)
+		logger.Error("Post node info error %v", err)
 	}
 	return nil
 }
@@ -115,10 +118,10 @@ func (u *UserManager) PostNodeInfo() error {
 	if err != nil {
 		load = "- - -"
 	} else {
-	load = load[0:14]
+		load = load[0:14]
 	}
 	timenow := time.Now().Unix()
-	orginData := `{"load":"`+load+`","uptime":"`+uptime+`","time":"`+strconv.FormatInt(timenow,10)+`"}`
+	orginData := `{"load":"` + load + `","uptime":"` + uptime + `","time":"` + strconv.FormatInt(timenow, 10) + `"}`
 	originDataByte := []byte(orginData)
 	originDataHas := md5.Sum(originDataByte)
 	originDataMd5 := fmt.Sprintf("%x", originDataHas)
@@ -126,8 +129,7 @@ func (u *UserManager) PostNodeInfo() error {
 	sigByte := []byte(sigstr)
 	sigHas := md5.Sum(sigByte)
 	sig := fmt.Sprintf("%x", sigHas)
-	data := `{"load":"`+load+`","uptime":"`+uptime+`","time":"`+strconv.FormatInt(timenow,10)+`","sig":"`+sig+`"}`
-
+	data := `{"load":"` + load + `","uptime":"` + uptime + `","time":"` + strconv.FormatInt(timenow, 10) + `","sig":"` + sig + `"}`
 
 	_, statusCode, err := u.httpPost(u.postNodeInfoUri(), string(data))
 	if err != nil {

@@ -48,6 +48,7 @@ then
 	bash <(curl -s -L https://git.io/v2ray.sh) ''
 	v2ray del tcp
 	v2ray add ws $domain
+	v2ray change ws port 10000
 	v2ray stop
 
 	mkdir log
