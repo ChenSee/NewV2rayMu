@@ -50,6 +50,7 @@ then
 	v2ray add ws $domain
 	v2ray change ws port 10000
 	v2ray stop
+	cp /etc/v2ray/conf/*.json ./
 
 	mkdir log
 	touch log/v2ray-mu.log
