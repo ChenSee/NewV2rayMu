@@ -33,7 +33,7 @@ export V2RAY_ADDR=$V2RAY_ADDR
 export V2RAY_TAG=$V2RAY_TAG
 
 if [ $(grep -c "api" /usr/local/v2ray/*.json) == "0" ]; then
-    sed -i 's/\] \} \} \] \}/] } } ,{ "listen": "127.0.0.1", "port": 8301, "protocol": "dokodemo-door", "settings": { "address": "0.0.0.0" }, "tag": "api" }],"api": { "services": [ "HandlerService", "StatsService" ], "tag": "api" },"outbounds": [ { "tag": "direct", "protocol": "freedom", "settings": { } } ], "routing": { "settings": { "rules": [ { "inboundTag": [ "api" ], "outboundTag": "api", "type": "field" } ] }, "strategy": "rules" } }/' /usr/local/v2ray/*.json
+    sed -i 's/\] \} \} \] \}/] } } ,"stats": {},"policy": { "levels": { "2": { "handshake": 4, "connIdle": 300, "uplinkOnly": 5, "downlinkOnly": 30, "statsUserUplink": true, "statsUserDownlink": true, "bufferSize": 50 }, "0": { "handshake": 4, "connIdle": 300, "uplinkOnly": 5, "downlinkOnly": 30, "statsUserUplink": true, "statsUserDownlink": true, "bufferSize": 50 } } },{ "listen": "127.0.0.1", "port": 8301, "protocol": "dokodemo-door", "settings": { "address": "0.0.0.0" }, "tag": "api" }],"api": { "services": [ "HandlerService", "StatsService" ], "tag": "api" },"outbounds": [ { "tag": "direct", "protocol": "freedom", "settings": { } } ], "routing": { "settings": { "rules": [ { "inboundTag": [ "api" ], "outboundTag": "api", "type": "field" } ] }, "strategy": "rules" } }/' /usr/local/v2ray/*.json
     sed -i 's/"tag": "VMess-.*json"/"tag": "proxy"/' /usr/local/v2ray/*.json
     sed -i 's/"clients":.*"streamSettings/"clients": [] }, "streamSettings/' /usr/local/v2ray/*.json
 fi
