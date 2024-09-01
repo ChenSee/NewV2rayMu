@@ -41,8 +41,8 @@ then
 
 
 	clear
-	mkdir /usr/local/v2ray
-	cd /usr/local/v2ray
+	mkdir /usr/local/sing-box
+	cd /usr/local/sing-box
 	echo -e "\033[33m ____            _  __     __\n|  _ \ _ __ ___ (_) \ \   / /\n| |_) | '__/ _ \| |  \ \ / / \n|  __/| | | (_) | |   \ V /  \n|_|   |_|  \___// |    \_/ \033[5mInstaling...\033[0m\033[33m  \n              |__/          for Mu_api\n\033[0m"
 	
 	bash <(wget -qO- -o- https://github.com/233boy/sing-box/raw/main/install.sh) ''
@@ -77,7 +77,7 @@ then
 	    echo "* * * * * cd $(readlink -f .) && ./status.sh">> /var/spool/cron/root
 	fi
 	bash run.sh
-	echo "cd /usr/local/v2ray && bash run.sh" >> /etc/rc.d/rc.local
+	echo "cd /usr/local/sing-box && bash run.sh" >> /etc/rc.d/rc.local
 fi
 
 chmod +x /etc/rc.d/rc.local
