@@ -1,7 +1,7 @@
 #!/bin/bash
 v2ray_realpath=/usr/local/bin/xray
-v2ray_pid=$(ps ux | grep $v2ray_realpath | grep -v grep | awk '{print $2}')
-v2muctl_pid=$(ps ux | grep "$(readlink -f v2mctl)" | grep -v grep | awk '{print $2}')
+v2ray_pid=$(ps -ef | grep $v2ray_realpath | grep -v grep | awk '{print $2}')
+v2muctl_pid=$(ps -ef | grep "$(readlink -f v2mctl)" | grep -v grep | awk '{print $2}')
 
 if [ ! $v2ray_pid ];
 then

@@ -104,7 +104,7 @@ func (u *UserManager) postNodeInfo() error {
 }
 
 func (u *UserManager) postNodeInfoUri() string {
-	return fmt.Sprintf("%s/nodes/%d/info", cfg.WebApi.Url, cfg.WebApi.NodeId)
+	return fmt.Sprintf("%s/nodes/%s/info", cfg.WebApi.Url, cfg.WebApi.NodeId)
 }
 
 func (u *UserManager) PostNodeInfo() error {
