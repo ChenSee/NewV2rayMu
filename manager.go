@@ -6,11 +6,10 @@ import (
 	"errors"
 	"strconv"
 	"time"
+	"v2mctl/v2raymanager"
 
 	"fmt"
 	"net/http"
-
-	"v2raymanager"
 
 	"github.com/catpie/musdk-go"
 	"github.com/orvice/shadowsocks-go/mu/system"
@@ -42,7 +41,7 @@ func (u *UserManager) checkUser(user musdk.User) error {
 	if user.IsEnable() && !u.Exist(user) {
 		logger.Info("Run user id %d uuid %s", user.Id, user.V2rayUser.UUID)
 		// run user
-		_, err = u.vm.AddUser(ctx, &user.V2rayUser)
+		_, err = u.vm.AddUser(ctx, user)
 		if err != nil {
 			logger.Error("Add user %s error %v", user.V2rayUser.UUID, err)
 			return err
@@ -55,7 +54,7 @@ func (u *UserManager) checkUser(user musdk.User) error {
 	if !user.IsEnable() && u.Exist(user) {
 		logger.Info("Stop user id %d uuid %s", user.Id, user.V2rayUser.UUID)
 		// stop user
-		err = u.vm.RemoveUser(ctx, &user.V2rayUser)
+		err = u.vm.RemoveUser(ctx, user)
 
 		if err != nil {
 			logger.Error("Remove user error %v", err)

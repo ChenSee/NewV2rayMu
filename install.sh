@@ -11,6 +11,7 @@ mu_uri=$1
 mu_key=$2
 domain=$3
 node_id=$4
+port=$5
 
 echo '-------------------------------'
 echo '|        Your Configure       |'
@@ -23,6 +24,8 @@ echo 'Your Mu-api KEY:'
 echo $mu_key
 echo 'Your Domain:'
 echo $domain
+echo 'Your Port:'
+echo $port
 echo 'Is it OK?(y/n)'
 isok=n
 read isok
@@ -41,11 +44,11 @@ then
 
 
 	clear
-	mkdir /usr/local/sing-box
-	cd /usr/local/sing-box
+	mkdir /usr/local/xray
+	cd /usr/local/xray
 	echo -e "\033[33m ____            _  __     __\n|  _ \ _ __ ___ (_) \ \   / /\n| |_) | '__/ _ \| |  \ \ / / \n|  __/| | | (_) | |   \ V /  \n|_|   |_|  \___// |    \_/ \033[5mInstaling...\033[0m\033[33m  \n              |__/          for Mu_api\n\033[0m"
 	
-	bash <(wget -qO- -o- https://github.com/233boy/sing-box/raw/main/install.sh) ''
+	bash <(curl -L https://github.com/crazypeace/xray-vless-reality/raw/main/install.sh) 4 $port ''
 	# v2ray del tcp
 	# v2ray add ws $domain
 	# v2ray change ws port 10000
@@ -77,7 +80,7 @@ then
 	    echo "* * * * * cd $(readlink -f .) && ./status.sh">> /var/spool/cron/root
 	fi
 	bash run.sh
-	echo "cd /usr/local/sing-box && bash run.sh" >> /etc/rc.d/rc.local
+	echo "cd /usr/local/xray && bash run.sh" >> /etc/rc.d/rc.local
 fi
 
 chmod +x /etc/rc.d/rc.local

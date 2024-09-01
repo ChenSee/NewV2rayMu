@@ -7,11 +7,16 @@ import (
 	"log/slog"
 	"strings"
 
-	"github.com/v2fly/v2ray-core/v5/app/proxyman/command"
-	statscmd "github.com/v2fly/v2ray-core/v5/app/stats/command"
-	"github.com/v2fly/v2ray-core/v5/common/protocol"
-	"github.com/v2fly/v2ray-core/v5/common/serial"
-	"github.com/v2fly/v2ray-core/v5/proxy/vmess"
+	"github.com/catpie/musdk-go"
+	"github.com/orvice/utils/env"
+	"github.com/xtls/xray-core/app/proxyman/command"
+	statscmd "github.com/xtls/xray-core/app/stats/command"
+	"github.com/xtls/xray-core/common/protocol"
+	"github.com/xtls/xray-core/common/serial"
+
+	// "github.com/xtls/xray-core/proxy/shadowsocks"
+	// "github.com/xtls/xray-core/proxy/trojan"
+	"github.com/xtls/xray-core/proxy/vless"
 	"google.golang.org/grpc"
 )
 
@@ -56,17 +61,16 @@ func (m *Manager) SetLogger(l *slog.Logger) {
 }
 
 // return is exist,and error
-func (m *Manager) AddUser(ctx context.Context, u User) (bool, error) {
+func (m *Manager) AddUser(ctx context.Context, u musdk.User) (bool, error) {
 	resp, err := m.client.AlterInbound(ctx, &command.AlterInboundRequest{
 		Tag: m.inBoundTag,
 		Operation: serial.ToTypedMessage(&command.AddUserOperation{
 			User: &protocol.User{
-				Level: u.GetLevel(),
-				Email: u.GetEmail(),
-				Account: serial.ToTypedMessage(&vmess.Account{
-					Id:               u.GetUUID(),
-					AlterId:          u.GetAlterID(),
-					SecuritySettings: &protocol.SecurityConfig{Type: protocol.SecurityType_AUTO},
+				Level: u.V2rayUser.Level,
+				Email: u.V2rayUser.Email,
+				Account: serial.ToTypedMessage(&vless.Account{
+					Id:   u.V2rayUser.UUID,
+					Flow: env.Get("V2RAY_FLOW", "xtls-rprx-vision"),
 				}),
 			},
 		}),
@@ -81,11 +85,11 @@ func (m *Manager) AddUser(ctx context.Context, u User) (bool, error) {
 	return IsAlreadyExistsError(err), nil
 }
 
-func (m *Manager) RemoveUser(ctx context.Context, u User) error {
+func (m *Manager) RemoveUser(ctx context.Context, u musdk.User) error {
 	resp, err := m.client.AlterInbound(ctx, &command.AlterInboundRequest{
 		Tag: m.inBoundTag,
 		Operation: serial.ToTypedMessage(&command.RemoveUserOperation{
-			Email: u.GetEmail(),
+			Email: u.V2rayUser.Email,
 		}),
 	})
 	if err != nil {
@@ -98,10 +102,10 @@ func (m *Manager) RemoveUser(ctx context.Context, u User) error {
 }
 
 // @todo error handle
-func (m *Manager) GetTrafficAndReset(ctx context.Context, u User) (TrafficInfo, error) {
+func (m *Manager) GetTrafficAndReset(ctx context.Context, u musdk.User) (TrafficInfo, error) {
 	ti := TrafficInfo{}
 	up, err := m.statsClient.GetStats(ctx, &statscmd.GetStatsRequest{
-		Name:   fmt.Sprintf(UplinkFormat, u.GetEmail()),
+		Name:   fmt.Sprintf(UplinkFormat, u.V2rayUser.Email),
 		Reset_: true,
 	})
 	if err != nil && !IsNotFoundError(err) {
@@ -110,7 +114,7 @@ func (m *Manager) GetTrafficAndReset(ctx context.Context, u User) (TrafficInfo, 
 	}
 
 	down, err := m.statsClient.GetStats(ctx, &statscmd.GetStatsRequest{
-		Name:   fmt.Sprintf(DownlinkFormat, u.GetEmail()),
+		Name:   fmt.Sprintf(DownlinkFormat, u.V2rayUser.Email),
 		Reset_: true,
 	})
 	if err != nil && !IsNotFoundError(err) {
@@ -127,59 +131,6 @@ func (m *Manager) GetTrafficAndReset(ctx context.Context, u User) (TrafficInfo, 
 		ti.Down = down.Stat.Value
 	}
 	return ti, nil
-}
-
-type UserData struct {
-	User        User
-	TrafficInfo TrafficInfo
-}
-
-func (m *Manager) GetUserList(ctx context.Context, reset bool) ([]UserData, error) {
-	resp, err := m.statsClient.QueryStats(ctx, &statscmd.QueryStatsRequest{
-		Reset_: reset,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	var users = make(map[string]UserData)
-
-	for _, v := range resp.Stat {
-
-		email := getEmailFromStatName(v.GetName())
-		uuid := getUUDIFromEmail(email)
-
-		if _, ok := users[uuid]; !ok {
-			users[uuid] = UserData{
-				TrafficInfo: TrafficInfo{},
-			}
-		}
-
-		u := user{
-			email: email,
-			uuid:  uuid,
-		}
-		ti := users[uuid].TrafficInfo
-
-		if strings.Contains(v.GetName(), "downlink") {
-			ti.Down = v.Value
-		} else {
-			ti.Up = v.Value
-		}
-
-		users[uuid] = UserData{
-			User:        u,
-			TrafficInfo: ti,
-		}
-
-	}
-
-	var data = make([]UserData, 0, len(users))
-	for _, v := range users {
-		data = append(data, v)
-	}
-
-	return data, nil
 }
 
 func getEmailFromStatName(s string) string {

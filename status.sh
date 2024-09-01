@@ -1,5 +1,5 @@
 #!/bin/bash
-v2ray_realpath=/etc/sing-box/bin/sing-box
+v2ray_realpath=/usr/local/bin/xray
 update_pid=$(ps ux | grep "./update.sh" | grep -v grep | awk '{print $2}')
 v2ray_pid=$(ps ux | grep $v2ray_realpath | grep -v grep | awk '{print $2}')
 v2muctl_pid=$(ps ux | grep "$(readlink -f v2mctl)" | grep -v grep | awk '{print $2}')

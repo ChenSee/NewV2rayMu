@@ -3,8 +3,7 @@ package main
 import (
 	"context"
 	"sync"
-
-	"v2raymanager"
+	"v2mctl/v2raymanager"
 
 	"github.com/catpie/musdk-go"
 )
@@ -64,7 +63,7 @@ func (u *UserManager) Exist(user musdk.User) bool {
 func (u *UserManager) saveUserTraffic(user musdk.User) {
 	ctx, _ := context.WithCancel(u.ctx)
 	logger.Info("check user %d traffic", user.Id)
-	ti, _ := u.vm.GetTrafficAndReset(ctx, &user.V2rayUser)
+	ti, _ := u.vm.GetTrafficAndReset(ctx, user)
 	logger.Info("check user %v traffic", ti)
 	if ti.Down == 0 && ti.Up == 0 {
 		return
