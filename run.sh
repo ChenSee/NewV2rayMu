@@ -1,7 +1,8 @@
 #!/bin/bash
-v2ray_realpath=/etc/v2ray/bin/v2ray
+v2ray_realpath=/etc/sing-box/bin/sing-box
+v2ray_confpath=/etc/sing-box/conf
 v2muctl_realpath=$(readlink -f v2mctl)
-v2ray_pid=$(ps ux | grep "/etc/v2ray/bin/v2ray" | grep -v grep | awk '{print $2}')
+v2ray_pid=$(ps ux | grep $v2ray_realpath | grep -v grep | awk '{print $2}')
 v2muctl_pid=$(ps ux | grep "$(readlink -f v2mctl)" | grep -v grep | awk '{print $2}')
 if [ ! $v2ray_pid ]; then
     echo 'Starting V2Ray'
@@ -32,21 +33,22 @@ export SYNC_TIME=$SYNC_TIME
 export V2RAY_ADDR=$V2RAY_ADDR
 export V2RAY_TAG=$V2RAY_TAG
 
-if [ $(grep -c "api" /etc/v2ray/conf/*.json) == "0" ]; then
-    sed -i ":a;N;s/\n//g;ta" /etc/v2ray/conf/*.json
-    sed -i "s/ //g" /etc/v2ray/conf/*.json
-    sed -i 's/\]\}\}\]\}/]}},{"listen":"127.0.0.1","port":8301,"protocol":"dokodemo-door","settings":{"address":"0.0.0.0"},"tag":"api"}],"policy":{"levels":{"2":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true,"bufferSize":50},"0":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true,"bufferSize":50}}},"stats":{},"api":{"services":["HandlerService","StatsService"],"tag":"api"},"outbounds":[{"tag":"direct","protocol":"freedom","settings":{}}],"routing":{"settings":{"rules":[{"inboundTag":["api"],"outboundTag":"api","type":"field"}]},"strategy":"rules"}}/' /etc/v2ray/conf/*.json
-    sed -i 's/"tag":"VMess-.*json"/"tag":"proxy"/' /etc/v2ray/conf/*.json
-    sed -i 's/"clients":.*"streamSettings/"clients":[]},"streamSettings/' /etc/v2ray/conf/*.json
+if [ $(grep -c "api" $v2ray_confpath/*.json) == "0" ]; then
+    sed -i ":a;N;s/\n//g;ta" $v2ray_confpath/*.json
+    sed -i "s/ //g" $v2ray_confpath/*.json
+    sed -i 's/\]\}\}\}\}/]}}},{"listen":"127.0.0.1","port":8301,"protocol":"dokodemo-door","settings":{"address":"0.0.0.0"},"tag":"api"}],"policy":{"levels":{"2":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true,"bufferSize":50},"0":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true,"bufferSize":50}}},"stats":{},"api":{"services":["HandlerService","StatsService"],"tag":"api"},"routing":{"settings":{"rules":[{"inboundTag":["api"],"outboundTag":"api","type":"field"}]},"strategy":"rules"}}/' $v2ray_confpath/*.json
+    sed -i 's/"outbounds":\[/"outbounds":[{"tag":"direct","protocol":"freedom","settings":{}},/' $v2ray_confpath/*.json
+    sed -i 's/"tag":"VMess-.*json"/"tag":"proxy"/' $v2ray_confpath/*.json
+    sed -i 's/"clients":.*"streamSettings/"clients":[]},"streamSettings/' $v2ray_confpath/*.json
 fi
 
-nohup /usr/bin/env v2ray.ray.buffer.size=1 /etc/v2ray/bin/v2ray run -config /etc/v2ray/conf/*.json >> log/v2ray.log &
+nohup /usr/bin/env v2ray.ray.buffer.size=1 $v2ray_realpath run -config $v2ray_confpath/*.json >> log/v2ray.log &
 echo 'Preparing...'
 sleep 3
 nohup $(readlink -f v2mctl) >>/dev/null 2>&1 &
 sleep 1
 
-v2ray_pid=$(ps ux | grep "/etc/v2ray/bin/v2ray" | grep -v grep | awk '{print $2}')
+v2ray_pid=$(ps ux | grep $v2ray_realpath | grep -v grep | awk '{print $2}')
 v2muctl_pid=$(ps ux | grep "$(readlink -f v2mctl)" | grep -v grep | awk '{print $2}')
 
 if [ ! $v2ray_pid ]; then
