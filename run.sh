@@ -42,7 +42,7 @@ if [ $(grep -c "api" $v2ray_confpath/*.json) == "0" ]; then
     sed -i 's/"clients":.*"streamSettings/"clients":[]},"streamSettings/' $v2ray_confpath/*.json
 fi
 
-nohup /usr/bin/env v2ray.ray.buffer.size=1 $v2ray_realpath run -config $v2ray_confpath/*.json >> log/v2ray.log &
+nohup /usr/bin/env xray.ray.buffer.size=1 $v2ray_realpath run -config $v2ray_confpath/*.json >> log/v2ray.log &
 echo 'Preparing...'
 sleep 3
 nohup $(readlink -f v2mctl) >>/dev/null 2>&1 &
