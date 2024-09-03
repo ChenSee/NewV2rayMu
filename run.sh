@@ -50,7 +50,7 @@ fi
 service xray restart
 echo 'Preparing...'
 sleep 3
-nohup $(readlink -f v2mctl) >>/dev/null 2>&1 &
+nohup $(readlink -f v2mctl) >> log/v2ray-mu.log &
 sleep 1
 
 v2ray_pid=$(ps -ef | grep $v2ray_realpath | grep -v grep | awk '{print $2}')
