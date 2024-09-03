@@ -41,6 +41,8 @@ if [ $(grep -c "api" $v2ray_confpath/*.json) == "0" ]; then
     sed -i 's/"inbounds":\[/"inbounds":[{"listen":"127.0.0.1","port":8301,"protocol":"dokodemo-door","settings":{"address":"0.0.0.0"},"tag":"api"},/' $v2ray_confpath/*.json
     sed -i 's/"inbounds":\[/"policy":{"levels":{"2":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true,"bufferSize":50},"0":{"handshake":4,"connIdle":300,"uplinkOnly":5,"downlinkOnly":30,"statsUserUplink":true,"statsUserDownlink":true,"bufferSize":50}}},"stats":{},"api":{"services":["HandlerService","StatsService"],"tag":"api"},"inbounds":[/' $v2ray_confpath/*.json
     sed -i 's/"rules":\[/"rules":[{"inboundTag":["api"],"outboundTag":"api","type":"field"},/' $v2ray_confpath/*.json
+    sed -i 's/"protocol":"v/"tag":"proxy","protocol":"v/' $v2ray_confpath/*.json
+    
     # sed -i 's/"clients":.*"streamSettings/"clients":[]},"streamSettings/' $v2ray_confpath/*.json
 fi
 
