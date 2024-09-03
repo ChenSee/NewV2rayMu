@@ -48,9 +48,9 @@ then
 	cd /usr/local/xray
 	echo -e "\033[33m ____            _  __     __\n|  _ \ _ __ ___ (_) \ \   / /\n| |_) | '__/ _ \| |  \ \ / / \n|  __/| | | (_) | |   \ V /  \n|_|   |_|  \___// |    \_/ \033[5mInstaling...\033[0m\033[33m  \n              |__/          for Mu_api\n\033[0m"
 	
-	if [ $(which xray) == "" ]; then
+	# if [ $(which xray) == "" ]; then
 		bash <(curl -L https://github.com/crazypeace/xray-vless-reality/raw/main/install.sh) 4 $port ''
-	fi
+	# fi
 	# v2ray del tcp
 	# v2ray add ws $domain
 	# v2ray change ws port 10000
