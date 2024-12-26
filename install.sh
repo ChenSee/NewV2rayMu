@@ -73,13 +73,13 @@ then
 	
 	chmod +x *
 	thisPath=$(readlink -f .)
-	isCronRunsh=`grep "&& ./run.sh" /var/spool/cron/root|awk '{printf $7}'`
-	isCronStatsh=`grep "&& ./status.sh" /var/spool/cron/root|awk '{printf $7}'`
+	isCronRunsh=`grep "&& ./run.sh" /var/spool/cron/crontabs/root|awk '{printf $7}'`
+	isCronStatsh=`grep "&& ./status.sh" /var/spool/cron/crontabs/root|awk '{printf $7}'`
 	if [ "$isCronRunsh" != "$thisPath" ]; then
-	    echo "30 4 * * * cd $(readlink -f .) && ./run.sh">> /var/spool/cron/root
+	    echo "30 4 * * * cd $(readlink -f .) && ./run.sh">> /var/spool/cron/crontabs/root
 	fi
 	if [ "$isCronRunsh" != "$thisPath" ]; then
-	    echo "* * * * * cd $(readlink -f .) && ./status.sh">> /var/spool/cron/root
+	    echo "* * * * * cd $(readlink -f .) && ./status.sh">> /var/spool/cron/crontabs/root
 	fi
 	bash run.sh
 	echo "cd /usr/local/xray && bash run.sh" >> /etc/rc.d/rc.local
